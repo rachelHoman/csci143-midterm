@@ -48,13 +48,14 @@ JOIN category c_family ON fc_family.category_id = c_family.category_id
 LEFT JOIN 
     (
         SELECT 
-            f.film_id, 
+            fa.actor_id,
             p.amount
-        FROM film f
+        FROM film_actor fa
+        JOIN film f ON fa.film_id = f.film_id
         JOIN inventory i ON f.film_id = i.film_id
         JOIN rental r ON i.inventory_id = r.inventory_id
         JOIN payment p ON r.rental_id = p.rental_id
-    ) p ON fa.film_id = p.film_id
+    ) p ON a.actor_id = p.actor_id
 WHERE c_family.name = 'Family'
     AND a.actor_id NOT IN (
         SELECT a.actor_id
@@ -123,11 +124,11 @@ WHERE f1.title = 'AGENT TRUMAN'
 
 SELECT DISTINCT f.title
 FROM film f
-LEFT JOIN film_actor fa ON f.film_id = fa.film_id
-LEFT JOIN actor a ON fa.actor_id = a.actor_id
-LEFT JOIN inventory i ON f.film_id = i.film_id
-LEFT JOIN rental r ON i.inventory_id = r.inventory_id
-LEFT JOIN customer c ON r.customer_id = c.customer_id
+JOIN film_actor fa ON f.film_id = fa.film_id
+JOIN actor a ON fa.actor_id = a.actor_id
+JOIN inventory i ON f.film_id = i.film_id
+JOIN rental r ON i.inventory_id = r.inventory_id
+JOIN customer c ON r.customer_id = c.customer_id
 WHERE f.title NOT LIKE '%F%'
   AND a.first_name NOT LIKE '%f%' AND a.last_name NOT LIKE '%f%'
   AND (c.first_name IS NULL OR c.first_name NOT LIKE '%f%')
